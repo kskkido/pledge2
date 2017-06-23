@@ -48,7 +48,7 @@ describe('The `$Promise` class', function(){
   // The only argument to a promise constructor is a function called the
   // "executor". We will circle back to this function later.
 
-  xit('can be called with a function argument (the "executor"), returning a new promise instance', function(){
+  it('can be called with a function argument (the "executor"), returning a new promise instance', function(){
     var executor = function () {};
     var promise = new $Promise(executor);
     expect( promise instanceof $Promise ).toBe( true );
@@ -56,7 +56,7 @@ describe('The `$Promise` class', function(){
 
   // This type check mimics the strictness of real ES6 Promises.
 
-  xit('throws a descriptive type error if called with no function argument', function(){
+  it('throws a descriptive type error if called with no function argument', function(){
     var nonFunctions = [null, 'bonjour', undefined, 452, {}, false];
     nonFunctions.forEach(function (nonFunction) {
       expect(callingNewPromiseWith(nonFunction)).toThrowError(
@@ -88,18 +88,18 @@ describe('A promise instance', function(){
   // common convention is to use a naming scheme to mark a method as "private".
   // Beginning methods with an `._underscore` is one such signal.
 
-  xit('starts with "pending" internal state', function(){
+  it('starts with "pending" internal state', function(){
     expect( promise._state ).toBe( 'pending' );
   });
 
   // NOTE — promises are NOT supposed to have public resolver and rejector
   // methods. However, hiding this implementation detail can be tricky.
 
-  xit('has an `._internalResolve` instance method', function () {
+  it('has an `._internalResolve` instance method', function () {
     expect( typeof promise._internalResolve ).toBe( 'function' );
   });
 
-  xit('has an `._internalReject` instance method', function () {
+  it('has an `._internalReject` instance method', function () {
     expect( typeof promise._internalReject ).toBe( 'function' );
     expect( promise._internalReject ).not.toBe( promise._internalResolve );
   });
@@ -108,7 +108,7 @@ describe('A promise instance', function(){
 
   describe('resolving', function(){
 
-    xit('changes the promise state to "fulfilled"', function(){
+    it('changes the promise state to "fulfilled"', function(){
 
       // Why not "resolved"? This will be covered in detail in Ch. 5, but
       // for now just know that strict P/A+ terminology draws a distinction
@@ -120,7 +120,7 @@ describe('A promise instance', function(){
       expect( promise._state ).toBe( 'fulfilled' );
     });
 
-    xit('can send data to the promise for storage', function(){
+    it('can send data to the promise for storage', function(){
       var someData = { name: 'Harry Potter' };
       promise._internalResolve( someData );
       expect( promise._value ).toBe( someData );
@@ -128,7 +128,7 @@ describe('A promise instance', function(){
 
     // Hint: use the pending status.
 
-    xit('does not affect an already-fulfilled promise', function(){
+    it('does not affect an already-fulfilled promise', function(){
       var data1 = { name: 'Harry Potter' };
       var data2 = { name: 'Gandalf' };
       promise._internalResolve( data1 );
@@ -136,7 +136,7 @@ describe('A promise instance', function(){
       expect( promise._value ).toBe( data1 );
     });
 
-    xit('works even with falsey values', function(){
+    it('works even with falsey values', function(){
       var data1; // undefined; could also work with null, 0, false, etc.
       var data2 = 'oops!';
       promise._internalResolve( data1 );
@@ -151,18 +151,18 @@ describe('A promise instance', function(){
     // Rejection and fulfillment are virtually identical. This should not
     // require much more code.
 
-    xit('changes the promise state to "rejected"', function(){
+    it('changes the promise state to "rejected"', function(){
       promise._internalReject();
       expect( promise._state ).toBe( 'rejected' );
     });
 
-    xit('can send a reason to the promise for storage', function(){
+    it('can send a reason to the promise for storage', function(){
       var myReason = { error: 'bad request' };
       promise._internalReject( myReason );
       expect( promise._value ).toBe( myReason );
     });
 
-    xit('does not affect an already-rejected promise', function(){
+    it('does not affect an already-rejected promise', function(){
       var reason1 = { error: 'bad request' };
       var reason2 = { error: 'timed out' };
       promise._internalReject( reason1 );
@@ -170,7 +170,7 @@ describe('A promise instance', function(){
       expect( promise._value ).toBe( reason1 );
     });
 
-    xit('works even with falsey values', function(){
+    it('works even with falsey values', function(){
       var reason1;
       var reason2 = 'oops!';
       promise._internalReject( reason1 );
@@ -185,14 +185,14 @@ describe('A promise instance', function(){
     // If you used the pending status for your "does not affect already
     // fulfilled / rejected" specs, these two specs should pass already.
 
-    xit('`reject` does not overwrite fulfillment', function(){
+    it('`reject` does not overwrite fulfillment', function(){
       promise._internalResolve( 'Dumbledore' );
       promise._internalReject( 404 );
       expect( promise._state ).toBe( 'fulfilled' );
       expect( promise._value ).toBe( 'Dumbledore' );
     });
 
-    xit('`resolve` does not overwrite rejection', function(){
+    it('`resolve` does not overwrite rejection', function(){
       promise._internalReject( 404 );
       promise._internalResolve( 'Dumbledore' );
       expect( promise._state ).toBe( 'rejected' );
@@ -224,13 +224,13 @@ describe('The executor function', function(){
     executor = jasmine.createSpy();
   });
 
-  xit('gets called when making a new $Promise', function(){
+  it('gets called when making a new $Promise', function(){
     expect( executor ).not.toHaveBeenCalled();
     var promise = new $Promise(executor); // eslint-disable-line no-unused-vars
     expect( executor ).toHaveBeenCalled();
   });
 
-  xit('gets called with two different functions (funception!), resolve and reject', function(){
+  it('gets called with two different functions (funception!), resolve and reject', function(){
     var promise = new $Promise(executor); // eslint-disable-line no-unused-vars
     var argsPassedIntoExecutor = executor.calls.argsFor(0);
 
@@ -249,7 +249,7 @@ describe('The executor function', function(){
     // like "cannot read X of undefined". Think carefully; you may have an
     // issue with *context* (the `this` keyword).
 
-    xit('resolves the promise', function(){
+    it('resolves the promise', function(){
       var promise = new $Promise(function (resolve) {
         resolve('WinGARdium leviOHsa.');
       });
@@ -262,7 +262,7 @@ describe('The executor function', function(){
     // After all, you worked so hard to make sure `._internalResolve` and
     // `._internalReject` work properly.
 
-    xit('is indistinguishable in behavior from `._internalResolve`', function () {
+    it('is indistinguishable in behavior from `._internalResolve`', function () {
       var resolver;
       var promise = new $Promise(function (resolve) {
         resolve('Use the promise machinery, Luke.');
@@ -283,7 +283,7 @@ describe('The executor function', function(){
 
     // Yet again, resolution and rejection are basically the same.
 
-    xit('rejects the promise', function(){
+    it('rejects the promise', function(){
       var promise = new $Promise(function (resolve, reject) {
         reject('Stupefy!');
       });
@@ -291,7 +291,7 @@ describe('The executor function', function(){
       expect( promise._value ).toBe( 'Stupefy!' );
     });
 
-    xit('is indistinguishable in behavior from `._internalReject`', function () {
+    it('is indistinguishable in behavior from `._internalReject`', function () {
       var rejector;
       var promise = new $Promise(function (resolve, reject) {
         reject('You must unlearn what you have learned.');
@@ -310,7 +310,7 @@ describe('The executor function', function(){
 
   // This part should pass if you did the above correctly. Follow the logic:
 
-  xit('therefore allows the *creator* of a new promise to control its fate, even asynchronously!', function (done) {
+  it('therefore allows the *creator* of a new promise to control its fate, even asynchronously!', function (done) {
 
     var promise3 = new $Promise(function (resolve) {
       setTimeout(function runsInTheFuture () {

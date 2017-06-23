@@ -42,7 +42,7 @@ describe('For a given promiseA (pA)', function(){
   // Our parent promise must maintain some kind of reference to the downstream
   // promise, in order to control chaining.
 
-  xit('`.then` adds a new promise to its handler group', function(){
+  it('`.then` adds a new promise to its handler group', function(){
     promiseA.then();
     var groups = promiseA._handlerGroups;
     expect( groups[0].downstreamPromise instanceof $Promise ).toBe( true );
@@ -55,7 +55,7 @@ describe('For a given promiseA (pA)', function(){
   // Passing this may break your `.catch` from chapter 3. If that happens,
   // you will have to go back and fix `.catch`, taking this spec into account.
 
-  xit('`.then` returns that downstream promise', function(){
+  it('`.then` returns that downstream promise', function(){
     var promiseB = promiseA.then();
     expect( promiseB ).toBe( promiseA._handlerGroups[0].downstreamPromise );
   });
@@ -73,7 +73,7 @@ describe('For a given promiseA (pA)', function(){
 
     // Fulfillment bubbles down to the first available success handler.
 
-    xit("if pA is fulfilled but has no success handler, pB is fulfilled with pA's value", function (done) {
+    it("if pA is fulfilled but has no success handler, pB is fulfilled with pA's value", function (done) {
       var promiseB = promiseA.then();
       promiseA._internalResolve( 9001 );
       // Do not set state manually; a resolver should be called somewhere.
@@ -86,7 +86,7 @@ describe('For a given promiseA (pA)', function(){
 
     // Rejection bubbles down to the first available error handler.
 
-    xit("if pA is rejected but has no error handler, pB is rejected with pA's reason", function (done) {
+    it("if pA is rejected but has no error handler, pB is rejected with pA's reason", function (done) {
       var promiseB = promiseA.then();
       promiseA._internalReject( 'darn' );
       // Do not set state manually; a rejector should be called somewhere.
@@ -98,7 +98,7 @@ describe('For a given promiseA (pA)', function(){
 
     // This is for normal (synchronous / non-promise) return values
 
-    xit("if pA's success handler returns a value `x`, pB is fulfilled with `x`", function (done) {
+    it("if pA's success handler returns a value `x`, pB is fulfilled with `x`", function (done) {
       var promiseB = promiseA.then( thisReturnsHi );
       promiseA._internalResolve();
       expect( promiseB ).toFulfillWith( 'hi', done );
@@ -106,7 +106,7 @@ describe('For a given promiseA (pA)', function(){
 
     // This is for normal (synchronous / non-promise) return values
 
-    xit("if pA's error handler returns a value `x`, pB is fulfilled with `x`", function (done) {
+    it("if pA's error handler returns a value `x`, pB is fulfilled with `x`", function (done) {
       // Why fulfilled? This is similar to `try`-`catch`. If promiseA is
       // rejected (equivalent to `try` failure), we pass the reason to
       // promiseA's error handler (equivalent to `catch`). We have now
@@ -122,13 +122,13 @@ describe('For a given promiseA (pA)', function(){
     // Exceptions cause the returned promise to be rejected with the error.
     // Hint: you will need to use `try` & `catch` to make this work.
 
-    xit("if pA's success handler throws a reason `e`, pB is rejected with `e`", function (done) {
+    it("if pA's success handler throws a reason `e`, pB is rejected with `e`", function (done) {
       var promiseB = promiseA.then( thisThrowsShade );
       promiseA._internalResolve();
       expect( promiseB ).toRejectWith( 'shade', done );
     }, FAST_TIMEOUT);
 
-    xit("if pA's error handler throws a reason `e`, pB is rejected with `e`", function (done) {
+    it("if pA's error handler throws a reason `e`, pB is rejected with `e`", function (done) {
       var promiseB = promiseA.catch( thisThrowsShade );
       promiseA._internalReject();
       expect( promiseB ).toRejectWith( 'shade', done );
@@ -139,17 +139,18 @@ describe('For a given promiseA (pA)', function(){
     // Instead, we want to make promiseB to "become" pZ by copying
     // pZ's behavior — aka assimilation. These four tests are brain-benders.
 
-    xit("if pA's success handler returns promiseZ which fulfills, pB mimics pZ", function (done) {
+    it("if pA's success handler returns promiseZ which fulfills, pB mimics pZ", function (done) {
       var promiseZ = new $Promise(noop);
       var promiseB = promiseA.then(function(){
         return promiseZ;
       });
+      console.log('resolve')
       promiseA._internalResolve();
       promiseZ._internalResolve( 'testing' );
       expect( promiseB ).toFulfillWith( 'testing', done );
     }, FAST_TIMEOUT);
 
-    xit("if pA's error handler returns promiseZ which fulfills, pB mimics pZ", function (done) {
+    it("if pA's error handler returns promiseZ which fulfills, pB mimics pZ", function (done) {
       var promiseZ = new $Promise(noop);
       var promiseB = promiseA.catch(function(){
         return promiseZ;
@@ -159,7 +160,7 @@ describe('For a given promiseA (pA)', function(){
       expect( promiseB ).toFulfillWith( 'testing', done );
     }, FAST_TIMEOUT);
 
-    xit("if pA's success handler returns promiseZ which rejects, pB mimics pZ", function (done) {
+    it("if pA's success handler returns promiseZ which rejects, pB mimics pZ", function (done) {
       var promiseZ = new $Promise(noop);
       var promiseB = promiseA.then(function(){
         return promiseZ;
@@ -169,7 +170,7 @@ describe('For a given promiseA (pA)', function(){
       expect( promiseB ).toRejectWith( 'testing', done );
     }, FAST_TIMEOUT);
 
-    xit("if pA's error handler returns promiseZ which rejects, pB mimics pZ", function (done) {
+    it("if pA's error handler returns promiseZ which rejects, pB mimics pZ", function (done) {
       var promiseZ = new $Promise(noop);
       var promiseB = promiseA.catch(function(){
         return promiseZ;
@@ -186,7 +187,7 @@ describe('For a given promiseA (pA)', function(){
     // promise. But of course you can still chain off of settled promises!
     // Your solution might already pass this. But maybe not…
 
-    xit('still chains correctly if the promise is already settled', function (done) {
+    it('still chains correctly if the promise is already settled', function (done) {
       // utility / helper functions
       var count = 0, shouldFulfill, shouldReject;
       function countPassed () { if (++count === 10) done(); }
@@ -230,7 +231,7 @@ describe('For a given promiseA (pA)', function(){
 
   // Another demonstration. This should work if the previous specs passed.
 
-  xit('`.then` can be chained many times', function(){
+  it('`.then` can be chained many times', function(){
     var add1 = function (num) { return ++num; };
     var test = 0;
     promiseA

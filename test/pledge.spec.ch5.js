@@ -42,13 +42,13 @@ function noop () {}
 
 describe('The static method `$Promise.resolve`', function(){
 
-  xit('is a function, and not one we have already written', function(){
+  it('is a function, and not one we have already written', function(){
     expect( typeof $Promise.resolve ).toBe( 'function' );
     var promise = new $Promise(noop);
     expect( $Promise.resolve ).not.toBe( promise._internalResolve );
   });
 
-  xit('takes a <plain value A> and returns a <promise for A>', function(){
+  it('takes a <plain value A> and returns a <promise for A>', function(){
     [42, 'hi', {}, undefined, /cool/, false].forEach(value => {
       var promise = $Promise.resolve(value);
       expect( promise instanceof $Promise ).toBe( true );
@@ -60,7 +60,7 @@ describe('The static method `$Promise.resolve`', function(){
 
   // This would be more complex with "thenables," but we are ignoring those.
 
-  xit('takes a <promise for A> and returns the same <promise for A>', function(){
+  it('takes a <promise for A> and returns the same <promise for A>', function(){
     var firstPromise = new $Promise(noop);
     var secondPromise = $Promise.resolve(firstPromise);
     expect( secondPromise ).toBe( firstPromise );
@@ -73,7 +73,7 @@ describe('The static method `$Promise.resolve`', function(){
   // This spec should already pass if the above works. Read through the
   // assertions and try to understand what they demonstrate.
 
-  xit('demonstrates why "resolved" and "fulfilled" are not synonyms', function(){
+  it('demonstrates why "resolved" and "fulfilled" are not synonyms', function(){
     var rejectedPromise = new $Promise(function (resolve, reject) {
       reject();
     });
@@ -103,14 +103,14 @@ describe('The static method `$Promise.all`', function(){
     jasmine.addMatchers(customMatchers);
   });
 
-  xit('is a function', function(){
+  it('is a function', function(){
     expect( typeof $Promise.all ).toBe( 'function' );
   });
 
   // Real ES6 `Promise.all` accepts ANY iterable (https://mzl.la/1SopN1G), but
   // that is beyond Pledge's scope. Our `.all` only needs to support arrays.
 
-  xit('takes a single array argument', function(){
+  it('takes a single array argument', function(){
     // Passing an array into `$Promise.all` causes no errors.
     function callingAllWithArrays () {
       $Promise.all([]);
@@ -127,7 +127,7 @@ describe('The static method `$Promise.all`', function(){
 
   // Doesn't seem so hard at first.
 
-  xit('converts an <array of values> into a <promise for an array of values>', function (done) {
+  it('converts an <array of values> into a <promise for an array of values>', function (done) {
     var promise = $Promise.all(values);
     expect( promise instanceof $Promise ).toBe(true);
     // The promise should fulfill with the values.
@@ -135,9 +135,9 @@ describe('The static method `$Promise.all`', function(){
   });
 
   // Uh oh, getting a bit trickier.
-
-  xit('converts an <array of promises> into a <promise for an array of values>', function (done) {
+  it('converts an <array of promises> into a <promise for an array of values>', function (done) {
     var promises = values.map(value => $Promise.resolve(value));
+    console.log('promises')
     var promise = $Promise.all(promises);
     // The promise should fulfill with values (not promises for values).
     expect( promise ).toFulfillWith( values, done );
@@ -145,7 +145,7 @@ describe('The static method `$Promise.all`', function(){
 
   // No shortcuts; each individual element may be a value or a promise for a value.
 
-  xit('converts an <array of values and promises> into a <promise for an array of values>', function (done) {
+  it('converts an <array of values and promises> into a <promise for an array of values>', function (done) {
     var valuesAndPromises = values.map(value => {
       return Math.random() < 0.5 ? value : $Promise.resolve(value);
     });
@@ -169,7 +169,7 @@ describe('The static method `$Promise.all`', function(){
   // work if a promise is still pending. Remember how to access a promise's
   // eventual value? You might have to alter or augment your approach here.
 
-  xit('converts an <array of async promises> into a <promise for an array of values>', function (done) {
+  it('converts an <array of async promises> into a <promise for an array of values>', function (done) {
     var promises = values.map((value, i) => {
       return slowPromise(value, SMALL_DELAY * (i + 1));
     });
@@ -181,7 +181,7 @@ describe('The static method `$Promise.all`', function(){
   // Don't simply push values in the order they finish. Somehow you have to
   // keep track of which values go where in the final array.
 
-  xit('converts an <array of async promises> (fulfilling in random order) into a <promise for an array of values> (ordered by index in the original array)', function (done) {
+  it('converts an <array of async promises> (fulfilling in random order) into a <promise for an array of values> (ordered by index in the original array)', function (done) {
     var promises = values.map(slowPromise); // random delays
     var promise = $Promise.all(promises);
     // promise should fulfill with values, and in the right order too!
@@ -190,7 +190,7 @@ describe('The static method `$Promise.all`', function(){
 
   // So close now! What happens if one of the promises fails?
 
-  xit('rejects with <reason E> when one of the input promises rejects with <reason E>', function (done) {
+  it('rejects with <reason E> when one of the input promises rejects with <reason E>', function (done) {
     // promise that rejects after a random delay
     var promiseThatRejects = new $Promise(noop);
     var doomsday = Math.random * MAX_DELAY;
@@ -208,7 +208,7 @@ describe('The static method `$Promise.all`', function(){
 
   // This probably already passes, but let's be sure. We're strict that way.
 
-  xit('is not affected by additional rejections', function (done) {
+  it('is not affected by additional rejections', function (done) {
     // promises that reject after a random delay
     var doomed = new $Promise(noop);
     var reallyDoomed = new $Promise(noop);
